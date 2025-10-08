@@ -10,8 +10,8 @@ This project is a demo
 - Set up PostgreSQL database and orm. ✅
 
 - POST endpoint to upload files. 🔜
-        Use UploadFile. 🔜
-        Make validation for empty strings (whitespaces) and too short names. 🔜
+       - Use UploadFile. 🔜
+       - Make validation for empty strings (whitespaces) and too short names. 🔜
 - Authorization and user roles. 🔜
   
 - GET endpoint to see files. 🔜
