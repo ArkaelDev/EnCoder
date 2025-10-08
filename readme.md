@@ -22,4 +22,7 @@ This project is a demo
 
 - [ ] POST endpoint to share files.
 
+- [ ] Set up encryption.
+
+- [ ] Set up rate limit.
 
