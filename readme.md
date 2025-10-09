@@ -12,13 +12,15 @@ This project is a demo
 
 - [x] Set up PostgreSQL database and orm.
 
-- [ ] POST endpoint to upload files.
-  - [ ] Use UploadFile.
-  - [ ] Make validation for empty strings (whitespaces) and too short names.
+- [x] POST endpoint to upload files.
+
+- [x] GET endpoint to see specific file (by id)
+
+- [ ] Refactor architecture.
 
 - [ ] Authorization and user roles.
 
-- [ ] GET endpoint to see files.
+- [ ] GET endpoint too see every file that a user has acces.
 
 - [ ] POST endpoint to share files.
 
