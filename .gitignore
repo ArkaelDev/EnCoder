@@ -1,2 +1,5 @@
 #enviroment variables
 .venv
+app.log
+__pycache__/
+*.pyc

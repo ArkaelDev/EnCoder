@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, HTTPException, Depends, UploadFile, File, Form
+from fastapi import FastAPI, status, HTTPException, Depends, UploadFile, File, Form, Request
 from fastapi.responses import JSONResponse, Response
 from datetime import datetime
 from typing import List, Annotated
@@ -7,8 +7,12 @@ import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from logger import logger
+from middleware import log_middleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 allowed_types = [
+    #Only text like files.
     "text/plain",
     "text/html",
     "application/pdf",
@@ -19,11 +23,14 @@ allowed_types = [
     "application/vnd.ms-excel",
     "application/epub+zip"
 ]
-'''Only acepting text like files'''
-app = FastAPI()
-models.Base.metadata.create_all(bind=engine)
-'''whit this we create all the tables and columns on the postgres database'''
 
+app = FastAPI()
+app.add_middleware(BaseHTTPMiddleware, dispatch=log_middleware) 
+'''We separate that logic from the main app. Using BaseHTTPMiddleware class and overriding dispatch fuction.
+We use middleware so every request to our API is passed throught logs.'''
+
+models.Base.metadata.create_all(bind=engine)
+#This creates tables on the sqldatabase. Be sure to comment before testing
 
 def get_db():
     db = SessionLocal()
@@ -40,7 +47,7 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.get("/")
 async def root(status_code=status.HTTP_200_OK):
-    '''Default route, only use is to know if the server is running'''
+    #Only use is to ping
     return {"message": "Service is running, please log in"}
 
 @app.post("/upload")
@@ -57,6 +64,7 @@ async def upload_file(uploaded_file: UploadFile, db: db_dependency):
     Returns:
         Status code 201 if the contents are uploaded. Status code 500 if exception is raised and show the error as detail.
     '''
+    
     content = await uploaded_file.read()
     db_file = models.Files(
         file_name = uploaded_file.filename,
@@ -72,13 +80,16 @@ async def upload_file(uploaded_file: UploadFile, db: db_dependency):
             db.refresh(db_file)
         except SQLAlchemyError as e:
             db.rollback()
+            logger.exception(msg = e)
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         except Exception as e:
             db.rollback()
+            logger.exception(msg = e)
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         return JSONResponse(content={"message": "File uploaded successfully"}, status_code=status.HTTP_201_CREATED)
     else:
-        return HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="File type not supported.")
+        logger.error(msg= "File type not supported.")
+        raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="File type not supported.")
 
 @app.get("/files/{file_id}")
 async def get_item(file_id: int, db: db_dependency):
@@ -97,8 +108,10 @@ async def get_item(file_id: int, db: db_dependency):
     try:
         file = db.get(models.Files, file_id)
     except SQLAlchemyError as e:
+        logger.exception(msg = e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     if not file:
+        logger.exception(msg = "File not found.")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     return Response(
         content = file.body,

@@ -1,8 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, LargeBinary
 from database import Base
 
-'''Pretty self explanatory, we need a model for our orm. We copy the same model on main.py
-but we add the table name'''
+#Our orm model.
 
 class Files(Base):
     __tablename__ = 'files'
