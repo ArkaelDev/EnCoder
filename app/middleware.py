@@ -1,4 +1,4 @@
-from logger import logger
+from app.logger import logger
 from fastapi import Request
 
 async def log_middleware(request: Request, call_next): #Standard way to create middleware in fastapi

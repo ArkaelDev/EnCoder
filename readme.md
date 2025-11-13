@@ -14,13 +14,15 @@ This project is a demo
 
 - [x] POST endpoint to upload files.
 
-- [x] GET endpoint to see specific file (by id)
+- [x] GET endpoint to see specific file (by id).
 
-- [ ] Refactor architecture.
+- [x] Refactor architecture.
+
+- [ ] Apply unitary tests.
 
 - [ ] Authorization and user roles.
 
-- [ ] GET endpoint too see every file that a user has acces.
+- [ ] GET endpoint too see every file that a user has access.
 
 - [ ] POST endpoint to share files.
 

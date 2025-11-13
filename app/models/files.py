@@ -1,7 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, LargeBinary
-from database import Base
+from sqlalchemy import Column, Integer, String, DateTime, LargeBinary
+from app.database import Base
 
-#Our orm model.
+#Our orm model for files.
 
 class Files(Base):
     __tablename__ = 'files'
