@@ -21,7 +21,7 @@ allowed_types = [
 ]
 
 
-async def get_file_by_id(file_id: int, db):
+async def get_file_by_id(file_id: int, db:db_dependency):
     '''Summary:
         We use our file id to search in our database through the model. Raise an exception if any error occurs, show the error.
         Raise and exception if the file doesn't exists.
@@ -38,7 +38,7 @@ async def get_file_by_id(file_id: int, db):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     if not file:
         logger.exception(msg = "File not found.")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="NO")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     return file
     
 
