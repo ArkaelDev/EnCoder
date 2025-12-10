@@ -18,7 +18,11 @@ This project is a demo
 
 - [x] Refactor architecture.
 
-- [ ] Apply unitary tests.
+- [x] Apply tests.
+
+- [x] Pydantic schemas.
+
+- [x] User model.
 
 - [ ] Authorization and user roles.
 
