@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, LargeBinary
+from sqlalchemy import Column, Integer, String
 from app.database import Base
 
 class User(Base):
@@ -8,3 +8,6 @@ class User(Base):
     email = Column(String, index=True, nullable=False)
     password = Column(String, nullable=False)
     full_name = Column(String, nullable=True)
+
+class UserInDB(User):
+    hashed_password: str

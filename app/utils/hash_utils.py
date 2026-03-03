@@ -1,4 +1,5 @@
 from pwdlib import PasswordHash
+from app.models.users import UserInDB
 
 password_hash = PasswordHash.recommended()
 

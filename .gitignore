@@ -5,3 +5,5 @@ app.log
 #cache
 __pycache__/
 *.py[cod]
+#settings
+settings.py

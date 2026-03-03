@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+python-dotenv
+email-validator
+httpx
+pytest
+typer
+websockets
+watchfiles
+markdown-it-py
+sqlalchemy
+psycopg2
+python-multipart
+pwdlib
+pwdlib[argon2]
+Pygments

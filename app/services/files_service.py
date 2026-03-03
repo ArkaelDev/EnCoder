@@ -4,7 +4,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.logger import logger
 from app.dependencies import db_dependency
 from fastapi import HTTPException, status, UploadFile
-from app.dependencies import db_dependency
 from fastapi.responses import JSONResponse
 
 allowed_types = [
