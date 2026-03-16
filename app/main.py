@@ -2,10 +2,11 @@ from fastapi import FastAPI, status
 from app.database import engine, Base
 from app.middleware import log_middleware
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.routers import files, users
+from app.routers import files, users, auth
 from app.models.users import User
 
 app = FastAPI()
+app.include_router(auth.router)
 app.include_router(files.router)
 app.include_router(users.router)
 app.add_middleware(BaseHTTPMiddleware, dispatch=log_middleware) 

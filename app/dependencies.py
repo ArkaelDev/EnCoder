@@ -15,3 +15,4 @@ We use try in case it fails and always close the database after the operation'''
 
 db_dependency = Annotated[Session, Depends(get_db)]
 '''We create out dependency. This is useful in order to separate the logic, not repeating code and make easier refactorization'''
+

@@ -31,7 +31,7 @@ async def get_file_by_id(file_id: int, db:db_dependency):
         The content as bytes. MIMI type for reading purposes.
         Headers content-disposition attachment so we suggest that the file is downloaded with the same name as in the database.'''
     try:
-        file = db.get(Files, file_id)
+        file = await db.get(Files, file_id)
     except SQLAlchemyError as e:
         logger.exception(msg = e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from app.core.settings import POSTGRES_DB
 
-URL_DATABASE = 'postgresql://postgres:postgres@localhost:5432/EnCoderTest' 
+URL_DATABASE = POSTGRES_DB
 
 '''Making the connection into the local postgres database. Using the username and the password for postgres, the route,
 the port (which default is 5432) and the name of the database'''

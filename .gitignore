@@ -7,3 +7,5 @@ __pycache__/
 *.py[cod]
 #settings
 settings.py
+#docker compose for db
+db_packages
