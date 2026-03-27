@@ -24,7 +24,12 @@ This project is a demo
 
 - [x] User model.
 
-- [ ] Authorization and user roles.
+- [x]JWT Token and authorization.
+
+- [ ] User roles, owner, viewer and editor
+    - [x] Change file database structure, allow ownership
+    - [ ] get user when uploading file
+    - [ ] allow users to pass permision
 
 - [ ] GET endpoint too see every file that a user has access.
 
@@ -33,4 +38,3 @@ This project is a demo
 - [ ] Set up encryption.
 
 - [ ] Set up rate limit.
-
