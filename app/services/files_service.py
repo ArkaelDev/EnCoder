@@ -1,13 +1,15 @@
-from app.models.files import Files
 from datetime import datetime
-from sqlalchemy.exc import SQLAlchemyError
-from app.logger import logger
-from app.dependencies import db_dependency
-from fastapi import HTTPException, status, UploadFile
+
+from fastapi import HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.dependencies import db_dependency
+from app.logger import logger
+from app.models.files import Files
 
 allowed_types = [
-    #Only text like files.
+    # Only text like files.
     "text/plain",
     "text/html",
     "application/pdf",
@@ -16,12 +18,14 @@ allowed_types = [
     "application/rtf",
     "application/vnd.oasis.opendocument.spreadsheet",
     "application/vnd.ms-excel",
-    "application/epub+zip"
+    "application/epub+zip",
+    "application/x-subrip",
+    "application/vnd.oasis.opendocument.text",
 ]
 
 
-async def get_file_by_id(file_id: int, db:db_dependency):
-    '''Summary:
+async def get_file_by_id(file_id: int, db: db_dependency):
+    """Summary:
         We use our file id to search in our database through the model. Raise an exception if any error occurs, show the error.
         Raise and exception if the file doesn't exists.
     Args:
@@ -29,20 +33,24 @@ async def get_file_by_id(file_id: int, db:db_dependency):
         db: db_dependency (Our connection to the database)
     Returns:
         The content as bytes. MIMI type for reading purposes.
-        Headers content-disposition attachment so we suggest that the file is downloaded with the same name as in the database.'''
+        Headers content-disposition attachment so we suggest that the file is downloaded with the same name as in the database."""
     try:
         file = await db.get(Files, file_id)
     except SQLAlchemyError as e:
-        logger.exception(msg = e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        logger.exception(msg=e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+        )
     if not file:
-        logger.exception(msg = "File not found.")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+        logger.exception(msg="File not found.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
+        )
     return file
-    
+
 
 async def upload_file_service(uploaded_file: UploadFile, db: db_dependency):
-    '''Summary:
+    """Summary:
         We take the file from the form, read its binaries. Make the relation with the orm model.
         We make sure that the file uploaded matches our allowed types. If not we raise an exception.
         Then we try to add and commit those changes into our db.
@@ -52,15 +60,15 @@ async def upload_file_service(uploaded_file: UploadFile, db: db_dependency):
         db: db_dependency (Our connection to the database)
     Returns:
         Status code 201 if the contents are uploaded. Status code 500 if exception is raised and show the error as detail.
-    '''
-    
+    """
+
     content = await uploaded_file.read()
     db_file = Files(
-        file_name = uploaded_file.filename,
-        date_time = datetime.now(),
-        size = uploaded_file.size,
-        type = uploaded_file.content_type,
-        body = content
+        file_name=uploaded_file.filename,
+        date_time=datetime.now(),
+        size=uploaded_file.size,
+        type=uploaded_file.content_type,
+        body=content,
     )
     if uploaded_file.content_type in allowed_types:
         try:
@@ -69,14 +77,23 @@ async def upload_file_service(uploaded_file: UploadFile, db: db_dependency):
             db.refresh(db_file)
         except SQLAlchemyError as e:
             db.rollback()
-            logger.exception(msg = e)
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            logger.exception(msg=e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            )
         except Exception as e:
             db.rollback()
-            logger.exception(msg = e)
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-        return JSONResponse(content={"message": "File uploaded successfully"}, status_code=status.HTTP_201_CREATED)
+            logger.exception(msg=e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
+            )
+        return JSONResponse(
+            content={"message": "File uploaded successfully"},
+            status_code=status.HTTP_201_CREATED,
+        )
     else:
-        logger.error(msg= "File type not supported.")
-        raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="File type not supported.")
-    
+        logger.error(msg="File type not supported.")
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="File type not supported.",
+        )
