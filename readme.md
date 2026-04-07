@@ -28,6 +28,7 @@ This project is a demo
 
 - [ ] User roles, owner, viewer and editor
     - [x] Change file database structure, allow ownership
+    - [x] make uploadfile endpoint exclusive to registered users
     - [ ] get user when uploading file
     - [ ] allow users to pass permision
 
