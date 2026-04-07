@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from fastapi import HTTPException, UploadFile, status
+from fastapi.param_functions import Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.core.security import get_current_active_user
 from app.dependencies import db_dependency
 from app.logger import logger
 from app.models.files import Files
@@ -49,7 +51,11 @@ async def get_file_by_id(file_id: int, db: db_dependency):
     return file
 
 
-async def upload_file_service(uploaded_file: UploadFile, db: db_dependency):
+async def upload_file_service(
+    uploaded_file: UploadFile,
+    db: db_dependency,
+    current_user: User,
+):
     """Summary:
         We take the file from the form, read its binaries. Make the relation with the orm model.
         We make sure that the file uploaded matches our allowed types. If not we raise an exception.
@@ -69,6 +75,7 @@ async def upload_file_service(uploaded_file: UploadFile, db: db_dependency):
         size=uploaded_file.size,
         type=uploaded_file.content_type,
         body=content,
+        owner=current_user,
     )
     if uploaded_file.content_type in allowed_types:
         try:

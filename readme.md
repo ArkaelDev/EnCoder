@@ -29,7 +29,7 @@ This project is a demo
 - [ ] User roles, owner, viewer and editor
     - [x] Change file database structure, allow ownership
     - [x] make uploadfile endpoint exclusive to registered users
-    - [ ] get user when uploading file
+    - [x] get user when uploading file
     - [ ] allow users to pass permision
 
 - [ ] GET endpoint too see every file that a user has access.

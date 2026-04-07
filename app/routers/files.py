@@ -16,7 +16,7 @@ async def upload_file(
     db: db_dependency,
     current_user: User = Depends(get_current_active_user),
 ):
-    return await upload_file_service(uploaded_file, db)
+    return await upload_file_service(uploaded_file, db, current_user)
 
 
 @router.get("/files/{file_id}", response_model=FileResponse)
